@@ -1,0 +1,34 @@
+/* WeatherNow minimal, responsive, blue/white theme */
+:root{--bg:#f5f9ff;--card:#ffffff;--ink:#0f172a;--muted:#475569;--primary:#2563eb;--ring:#93c5fd;--shadow:0 10px 20px rgba(2,6,23,0.06)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--ink)}
+.wn-container{max-width:880px;margin:0 auto;padding:16px}
+.wn-header{background:linear-gradient(180deg,#e0f2fe,transparent)}
+.logo{margin:0;font-size:28px;font-weight:800}
+.logo span{color:var(--primary)}
+.tagline{margin:.25rem 0 1rem;color:var(--muted)}
+.card{background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--shadow);margin:16px 0;border:1px solid #e5e7eb}
+.input-row{display:flex;gap:12px}
+input[type="text"]{flex:1;padding:14px 16px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;outline:none}
+input[type="text"]:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--ring)}
+button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:14px 18px;font-weight:600;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6;cursor:not-allowed}
+.helper{color:var(--muted);margin:.5rem 0 0}
+.alert{margin-top:12px;padding:12px;border-radius:12px;border:1px solid #fecaca;background:#fee2e2;color:#7f1d1d}
+.result-card .result-header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.result-card h2{margin:0 0 .25rem 0}
+.result-card p{margin:0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.metric{padding:12px;border:1px dashed #dbeafe;border-radius:12px;text-align:center}
+.metric-label{color:var(--muted);font-size:14px}
+.metric-value{font-size:28px;font-weight:700;margin-top:4px}
+.about-card h3{margin-top:0}
+.team{margin:0;padding-left:18px}
+.supervisor{color:var(--muted)}
+.wn-footer{padding:24px 0;color:var(--muted)}
+.wn-footer .sep{opacity:.4;margin:0 8px}
+/* accessibility */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* responsive */
+@media (max-width:600px){.input-row{flex-direction:column}.result-card .result-header{align-items:flex-start}}

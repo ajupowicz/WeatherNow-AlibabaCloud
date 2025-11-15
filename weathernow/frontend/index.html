@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WeatherNow</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <header class="wn-header">
+      <div class="wn-container">
+        <h1 class="logo">Weather<span>Now</span></h1>
+        <p class="tagline">Szybka prognoza dla Twojego miasta</p>
+      </div>
+    </header>
+
+    <main class="wn-container">
+      <section class="card search-card">
+        <div class="input-row">
+          <label for="city" class="sr-only">Miasto</label>
+          <input id="city" name="city" type="text" placeholder="np. Katowice" autocomplete="off" />
+          <button id="checkBtn" type="button">Sprawdź pogodę</button>
+        </div>
+        <p class="helper">Podaj nazwę miasta i kliknij „Sprawdź pogodę”.</p>
+        <div id="alert" class="alert" hidden></div>
+      </section>
+
+      <section id="result" class="card result-card" hidden>
+        <div class="result-header">
+          <div>
+            <h2 id="r-city">—</h2>
+            <p id="r-desc">—</p>
+          </div>
+          <img id="r-icon" alt="Ikona pogody" width="80" height="80" />
+        </div>
+        <div class="grid">
+          <div class="metric">
+            <div class="metric-label">Temperatura</div>
+            <div class="metric-value"><span id="r-temp">—</span>°C</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Odczuwalna</div>
+            <div class="metric-value"><span id="r-feels">—</span>°C</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Wilgotność</div>
+            <div class="metric-value"><span id="r-humidity">—</span>%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Wiatr</div>
+            <div class="metric-value"><span id="r-wind">—</span> m/s</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card about-card">
+        <h3>Zespół</h3>
+        <ul class="team">
+          <li>Alexsandra Jupowicz</li>
+          <li>Michał Posłuszny</li>
+          <li>Łukasz Pawełczyk</li>
+          <li>Magdalena Katra</li>
+          <li>Dominik Szydło</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="wn-footer">
+      <div class="wn-container">
+        <span>© WeatherNow</span>
+        <span class="sep">•</span>
+        <a href="https://openweathermap.org/" target="_blank" rel="noreferrer">Dane: OpenWeatherMap</a>
+      </div>
+    </footer>
+
+
+      
+      
+      <script>window.BACKEND_BASE_URL="http://127.0.0.1:8000";</script>
+    <script src="app.js"></script>
+  </body>
+</html>
