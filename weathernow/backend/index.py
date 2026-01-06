@@ -9,11 +9,21 @@ import json
 import os
 from typing import Any, Dict, Tuple
 from urllib.parse import quote_plus
+from pathlib import Path
 
 import requests
 from flask import Flask, jsonify, request, make_response
 
-APP = Flask(__name__)
+
+BASE_DIR = Path(__file__).resolve().parent.parent  # katalog projektu (nad backend/)
+APP = Flask(__name__, static_folder=str(BASE_DIR / "frontend"), static_url_path="")
+
+OPENWEATHER_TILE_LAYERS = {
+    "precipitation": "precipitation_new",
+    "clouds": "clouds_new",
+    "temperature": "temp_new",
+    "wind": "wind_new",
+}
 
 def build_icon_url(code: str) -> str:
     return f"https://openweathermap.org/img/wn/{code}.png"
@@ -31,8 +41,10 @@ def fetch_weather(city: str, api_key: str) -> Dict[str, Any]:
     main = payload.get("main") or {}
     weather = (payload.get("weather") or [{}])[0]
     wind = payload.get("wind") or {}
+    coord = payload.get("coord") or {}
     return {
         "city": payload.get("name") or city,
+        "coord": coord,
         "temperature": float(main.get("temp")) if main.get("temp") is not None else None,
         # feels_like: perceived temperature (same units as temp)
         "feels_like": float(main.get("feels_like")) if main.get("feels_like") is not None else None,
@@ -50,6 +62,15 @@ def add_cors(resp):
     resp.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
+
+@APP.route("/config", methods=["GET"])
+def app_config():
+    default_city = os.environ.get("DEFAULT_CITY", "").strip()
+
+    return jsonify({
+        "default_city": default_city or None
+    })
+
 
 @APP.route("/weather", methods=["GET", "OPTIONS"])
 def weather() -> Tuple[Any, int]:
@@ -78,6 +99,21 @@ def weather() -> Tuple[Any, int]:
         # Log in Function Compute logs; keep message generic in response
         print("Unexpected error:", repr(exc))
         return jsonify({"error": "internal error"}), 500
+    
+@APP.route("/map/config", methods=["GET"])  
+def map_config():
+    api_key = os.environ.get("OPENWEATHER_API_KEY", "").strip()
+    if not api_key:
+        return jsonify({"error": "Missing OPENWEATHER_API_KEY"}), 500
+
+    return jsonify({
+    "apiKey": api_key,
+    "tile_url_template": "https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}",
+    "layers": OPENWEATHER_TILE_LAYERS,
+    "default_layer": "precipitation",
+})
+
+
 
 # Alibaba Function Compute entrypoint
 def handler(environ, start_response):

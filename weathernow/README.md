@@ -7,6 +7,7 @@ A simple, academic-style weather web app.
 
 ## Authors
 - Aleksandra Jupowicz
+- Michał Posłuszny
 - Łukasz Pawełczyk
 - Magdalena Katra
 **Project Supervisor:** Dominik Śidło

@@ -59,6 +59,72 @@
     if(result) result.hidden = false;
   }
 
+async function loadConfig(){
+  const base = (window.BACKEND_BASE_URL || "").replace(/\/$/, "");
+  const url = base ? base + "/config" : "/config";
+
+  try{
+    const res = await fetch(url);
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){
+    console.warn("Config load failed", e);
+    return null;
+  }
+}
+
+let map = null;
+let weatherLayer = null;
+
+async function initMap(lat, lon){
+  const mapEl = document.getElementById("map");
+  if(!mapEl){
+    console.warn("Map container #map not found.");
+    return;
+  }
+  if(typeof L === "undefined"){
+    console.warn("Leaflet (L) not loaded.");
+    return;
+  }
+
+  const base = (window.BACKEND_BASE_URL || "").replace(/\/$/, "");
+  const url = base ? base + "/map/config" : "/map/config";
+
+  const res = await fetch(url);
+  const cfg = await res.json();
+  if(!res.ok){
+    console.warn("Map config error:", cfg);
+    return;
+  }
+
+  if(!map){
+    map = L.map("map").setView([lat, lon], 7);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap"
+    }).addTo(map);
+    map.createPane("weatherPane");
+    map.getPane("weatherPane").style.zIndex = 650;
+  }else{
+    map.setView([lat, lon], 7);
+  }
+
+  // usuń poprzednią warstwę pogodową
+  if(weatherLayer){
+    map.removeLayer(weatherLayer);
+  }
+
+  const layerCode = cfg.layers[cfg.default_layer]; // np. precipitation_new
+  const tileUrl = cfg.tile_url_template
+    .replace("{layer}", layerCode)
+    .replace("{apiKey}", cfg.apiKey);
+
+  weatherLayer = L.tileLayer(tileUrl, { opacity: 0.75, pane: "weatherPane" }).addTo(map);
+
+  // ważne, gdy kontener dopiero co się wyrenderował / zmienił rozmiar
+  setTimeout(() => map.invalidateSize(), 50);
+}
+
   async function handleCheck(){
     const city = cityInput.value;
     if(!city || !city.trim()){
@@ -88,6 +154,11 @@
       }
 
       renderData(payload);
+      if(payload && payload.coord && typeof payload.coord.lat === "number" && typeof payload.coord.lon === "number"){
+  initMap(payload.coord.lat, payload.coord.lon);
+}else{
+  console.warn("No coord in weather payload; map cannot be centered.", payload);
+}
     }catch(err){
       console.error(err);
       const msg = (err && err.message) ? err.message : "Nie udało się pobrać danych pogodowych.";
@@ -100,7 +171,8 @@
         // Show provider message if it's short, otherwise a generic Polish message
         showAlert(msg.length < 200 ? msg : "Nie udało się pobrać danych pogodowych.");
       }
-      result.hidden = true;
+      
+
     }finally{
       btn.disabled = false;
     }
@@ -108,4 +180,13 @@
 
   btn.addEventListener("click", handleCheck);
   cityInput.addEventListener("keydown", (e)=>{ if(e.key==="Enter") handleCheck(); });
+
+(async function init(){
+  const cfg = await loadConfig();
+  if(cfg && cfg.default_city){
+    cityInput.value = cfg.default_city;
+    handleCheck(); // automatyczne pobranie pogody
+  }
+})();
+
 })();

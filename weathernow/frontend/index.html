@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   </head>
   <body>
     <header class="wn-header">
@@ -56,6 +57,11 @@
         </div>
       </section>
 
+<section class="card map-card">
+  <h3>Opady atmosferyczne</h3>
+  <div id="map" style="height: 360px; border-radius: 12px;"></div>
+</section>
+
       <section class="card about-card">
         <h3>Zespół</h3>
         <ul class="team">
@@ -80,6 +86,7 @@
       
       
       <script>window.BACKEND_BASE_URL="http://127.0.0.1:8000";</script>
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
